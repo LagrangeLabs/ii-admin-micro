@@ -72,13 +72,7 @@ class BasicLayout extends React.PureComponent {
     getMenuData({ routes, authority, permissionMenuData });
   }
 
-  componentDidUpdate() {
-    const { collapsed } = this.props;
 
-    if (!collapsed) {
-      this.handleMenuCollapse(false);
-    }
-  }
 
   getContext() {
     const { location, breadcrumbNameMap } = this.props;
@@ -109,25 +103,18 @@ class BasicLayout extends React.PureComponent {
   };
 
   getLayoutStyle = () => {
-    const { fixSiderbar, collapsed, layout } = this.props;
+    const { fixSiderbar, layout } = this.props;
 
     if (fixSiderbar && layout !== 'topmenu') {
       return {
-        paddingLeft: collapsed ? '80px' : '200px',
+        paddingLeft: '200px',
       };
     }
 
     return null;
   };
 
-  handleMenuCollapse = collapsed => {
-    const { dispatch } = this.props;
 
-    dispatch({
-      type: 'global/changeLayoutCollapsed',
-      payload: collapsed,
-    });
-  };
 
   hideModal() {
     this.setState({ modalStatus: false });
@@ -195,7 +182,6 @@ class BasicLayout extends React.PureComponent {
             <SiderMenu
               logo={logo}
               theme={navTheme}
-              onCollapse={this.handleMenuCollapse}
               title={title}
               {...this.props}
               menuData={nMenus}
@@ -210,7 +196,6 @@ class BasicLayout extends React.PureComponent {
           >
             <Header
               menuData={nMenus}
-              handleMenuCollapse={this.handleMenuCollapse}
               logo={logo}
               {...this.props}
               showPasswordModal={() => this.setState({ modalStatus: true })}
@@ -246,7 +231,6 @@ class BasicLayout extends React.PureComponent {
 
 const mapStateToProps = ({ global, settings, menu, login }) => {
   return {
-    collapsed: global.collapsed,
     layout: settings.layout,
     menuData: menu.menuData,
     permissionRoutes: menu.permissionRoutes,

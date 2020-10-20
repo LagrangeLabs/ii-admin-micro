@@ -122,7 +122,6 @@ export default class BaseMenu extends PureComponent {
       mode,
       location: { pathname },
       className,
-      collapsed,
     } = this.props;
     // if pathname can't match, use the nearest parent's key
     let selectedKeys = this.getSelectedMenuKeys(pathname);
@@ -130,7 +129,7 @@ export default class BaseMenu extends PureComponent {
       selectedKeys = [openKeys[openKeys.length - 1]];
     }
     let props = {};
-    if (openKeys && !collapsed) {
+    if (openKeys) {
       props = {
         openKeys: openKeys.length === 0 ? [...selectedKeys] : openKeys,
       };

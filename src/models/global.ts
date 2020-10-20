@@ -4,7 +4,6 @@ import { Effect } from 'dva';
 import { message } from 'antd';
 
 export interface GlobalModelState {
-  collapsed?: boolean;
   notices?: [];
   unRead?: 0;
 }
@@ -18,7 +17,6 @@ export interface GlobalModelType {
     changeNoticeReadState?: Effect;
   };
   reducers: {
-    changeLayoutCollapsed: Reducer<GlobalModelState>;
     saveNotices: Reducer<GlobalModelState>;
     saveUnread: Reducer<GlobalModelState>;
   };
@@ -28,7 +26,6 @@ export interface GlobalModelType {
 const GlobalModel: GlobalModelType = {
   namespace: 'global',
   state: {
-    collapsed: false,
     notices: [],
     unRead: 0,
   },
@@ -80,15 +77,6 @@ const GlobalModel: GlobalModelType = {
     },
   },
   reducers: {
-    changeLayoutCollapsed(
-      state = { collapsed: true },
-      { payload },
-    ): GlobalModelState {
-      return {
-        ...state,
-        collapsed: payload,
-      };
-    },
     saveNotices(state, { payload }): GlobalModelState {
       return {
         ...state,

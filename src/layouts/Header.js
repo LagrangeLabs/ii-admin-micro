@@ -31,12 +31,13 @@ class HeaderView extends PureComponent {
   }
 
   getHeadWidth = () => {
-    const { collapsed, settings } = this.props;
+    const { settings } = this.props;
     const { fixedHeader, layout } = settings;
     if (!fixedHeader || layout === 'topmenu') {
       return '100%';
     }
-    return collapsed ? 'calc(100% - 80px)' : 'calc(100% - 200px)';
+
+    return 'calc(100% - 200px)';
   };
 
   handleMenuClick = ({ key }) => {
@@ -83,8 +84,7 @@ class HeaderView extends PureComponent {
   };
 
   render() {
-    const { handleMenuCollapse, settings } = this.props;
-    const { fixedHeader } = settings;
+    const { fixedHeader } = this.props.settings;
     const { visible } = this.state;
     const width = this.getHeadWidth();
 
@@ -94,7 +94,6 @@ class HeaderView extends PureComponent {
         className={fixedHeader ? styles.fixedHeader : ''}
       >
         <GlobalHeader
-          onCollapse={handleMenuCollapse}
           onMenuClick={this.handleMenuClick}
           {...this.props}
         />
@@ -109,8 +108,7 @@ class HeaderView extends PureComponent {
   }
 }
 
-export default connect(({ login, global, settings }) => ({
-  collapsed: global.collapsed,
+export default connect(({ login, settings }) => ({
   currentUser: login.userInfo,
   settings,
 }))(HeaderView);
