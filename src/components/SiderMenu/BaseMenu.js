@@ -93,7 +93,7 @@ export default class BaseMenu extends PureComponent {
         </a>
       );
     }
-    const { location, isMobile, onCollapse } = this.props;
+    const { location } = this.props;
 
     return (
       <Link
@@ -101,13 +101,6 @@ export default class BaseMenu extends PureComponent {
         target={target}
         replace={itemPath === location.pathname}
         className={styles.menuItem}
-        onClick={
-          isMobile
-            ? () => {
-                onCollapse(true);
-              }
-            : undefined
-        }
       >
         {icon}
         <span>{name}</span>

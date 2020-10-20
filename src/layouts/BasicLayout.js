@@ -3,7 +3,6 @@ import { Layout } from 'antd';
 import DocumentTitle from 'react-document-title';
 import isEqual from 'lodash/isEqual';
 import memoizeOne from 'memoize-one';
-import { history } from 'umi';
 import { connect } from 'dva';
 import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
@@ -20,8 +19,6 @@ import styles from './BasicLayout.less';
 import { ConfigProvider } from 'antd';
 import zhCN from 'antd/es/locale/zh_CN';
 import ModfiyPassword from './ModifyPassword';
-import { getPageQuery } from '@/utils/utils';
-import { stringify } from 'querystring';
 import moment from 'moment';
 import 'moment/locale/zh-cn';
 
@@ -170,7 +167,6 @@ class BasicLayout extends React.PureComponent {
       layout: PropsLayout,
       children,
       location: { pathname },
-      isMobile,
       breadcrumbNameMap,
       title,
       permissionRoutes,
@@ -200,7 +196,6 @@ class BasicLayout extends React.PureComponent {
               logo={logo}
               theme={navTheme}
               onCollapse={this.handleMenuCollapse}
-              isMobile={isMobile}
               title={title}
               {...this.props}
               menuData={nMenus}
@@ -217,7 +212,6 @@ class BasicLayout extends React.PureComponent {
               menuData={nMenus}
               handleMenuCollapse={this.handleMenuCollapse}
               logo={logo}
-              isMobile={isMobile}
               {...this.props}
               showPasswordModal={() => this.setState({ modalStatus: true })}
             />
@@ -283,6 +277,6 @@ export default connect(
   mapDisptachToProps,
 )(props => (
   <Media query="(max-width: 599px)">
-    {isMobile => <BasicLayout {...props} isMobile={isMobile} />}
+    {() => <BasicLayout {...props} />}
   </Media>
 ));
