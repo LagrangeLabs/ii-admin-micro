@@ -7,7 +7,6 @@ import { connect } from 'dva';
 import { ContainerQuery } from 'react-container-query';
 import classNames from 'classnames';
 import pathToRegexp from 'path-to-regexp';
-import Media from 'react-media';
 import logo from '../assets/img/logo.png';
 import Footer from './Footer';
 import Header from './Header';
@@ -157,7 +156,6 @@ class BasicLayout extends React.PureComponent {
       breadcrumbNameMap,
       title,
       permissionRoutes,
-      route: { routes },
       fixedHeader,
     } = this.props;
 
@@ -214,24 +212,21 @@ class BasicLayout extends React.PureComponent {
     );
 
     return (
-      <React.Fragment>
-        <DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
-          <ContainerQuery query={query}>
-            {params => (
-              <Context.Provider value={this.getContext()}>
-                <div className={classNames(params)}>{layout}</div>
-              </Context.Provider>
-            )}
-          </ContainerQuery>
-        </DocumentTitle>
-      </React.Fragment>
+      <DocumentTitle title={this.getPageTitle(pathname, breadcrumbNameMap)}>
+        <ContainerQuery query={query}>
+          {params => (
+            <Context.Provider value={this.getContext()}>
+              <div className={classNames(params)}>{layout}</div>
+            </Context.Provider>
+          )}
+        </ContainerQuery>
+      </DocumentTitle>
     );
   }
 }
 
 const mapStateToProps = ({ global, settings, menu, login }) => {
   return {
-    layout: settings.layout,
     menuData: menu.menuData,
     permissionRoutes: menu.permissionRoutes,
     noticeList: global.notices,
@@ -259,8 +254,4 @@ const mapDisptachToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDisptachToProps,
-)(props => (
-  <Media query="(max-width: 599px)">
-    {() => <BasicLayout {...props} />}
-  </Media>
-));
+)(BasicLayout);
