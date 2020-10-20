@@ -56,45 +56,21 @@ export default class BaseMenu extends PureComponent {
    */
   getSubMenuOrItem = item => {
     // doc: add hideChildrenInMenu
+    const icon = getIcon(item.icon);
+
     if (
       item.children &&
       !item.hideChildrenInMenu &&
       item.children.some(child => child.name)
     ) {
       return (
-        <SubMenu title={this.getSubMenuItem(item)} key={item.path}>
+        <SubMenu key={item.path} title={item.name} icon={icon}>
           {this.getNavMenuItems(item.children)}
         </SubMenu>
       );
     }
-    return <Menu.Item key={item.path}>{this.getMenuItemPath(item)}</Menu.Item>;
-  };
 
-  /**
-   * 返回子菜单
-   * @memberof SiderMenu
-   */
-  getSubMenuItem = item => {
-    const { name } = item;
-    const icon = getIcon(item.icon);
-
-    const { isMobile, onCollapse } = this.props;
-
-    return (
-      <span
-        className={styles.menuItem}
-        onClick={
-          isMobile
-            ? () => {
-                onCollapse(true);
-              }
-            : undefined
-        }
-      >
-        {icon}
-        <span>{name}</span>
-      </span>
-    );
+    return <Menu.Item key={item.path} icon={icon}>{this.getMenuItemPath(item)}</Menu.Item>;
   };
 
   /**
@@ -180,6 +156,7 @@ export default class BaseMenu extends PureComponent {
         selectedKeys={selectedKeys}
         style={style}
         className={cls}
+        inlineCollapsed={true}
         {...props}
       >
         {this.getNavMenuItems(menuData)}

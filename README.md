@@ -34,7 +34,7 @@ $ yarn build
 
 整个项目是基于 Travis CI 搭建的持续集成环境。
 
-注意：`ii-admin-pro` 项目是基于 `https://travis-ci.org` 进行构建测试的，不是 `https://travis-ci.com`。所以，在本地进行账号登录加密的时候，要使用 `travis login --org`方式进行账号登录。
+注意：`ii-admin-micro` 项目是基于 `https://travis-ci.org` 进行构建测试的，不是 `https://travis-ci.com`。所以，在本地进行账号登录加密的时候，要使用 `travis login --org`方式进行账号登录。
 
 ## 三、参考资料
 
