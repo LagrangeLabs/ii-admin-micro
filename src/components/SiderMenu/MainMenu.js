@@ -1,12 +1,11 @@
 import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import { Menu } from 'antd';
-import { Link } from 'umi'
-import { urlToList } from '../_utils/pathTools';
-import { getMenuMatches } from './SiderMenuUtils';
+import { Link } from 'umi';
+import { getSelectedMenuKeys, conversionPath } from './SiderMenuUtils';
 import { isUrl } from '@/utils/utils';
 import MyIcon from '@/components/MyIcon';
-import styles from './index.less'
+import styles from './index.less';
 
 // Allow menu.js config icon as string or ReactNode
 //   icon: 'setting',
@@ -40,15 +39,6 @@ export default class MainMenu extends PureComponent {
       .filter(item => item);
   };
 
-  // Get the currently selected menu
-  getSelectedMenuKeys = pathname => {
-    const { flatMenuKeys } = this.props;
-
-    return urlToList(pathname).map(itemPath =>
-      getMenuMatches(flatMenuKeys, itemPath).pop(),
-    );
-  };
-
   /**
    * get MenuItem
    */
@@ -63,7 +53,7 @@ export default class MainMenu extends PureComponent {
    */
   getMenuItemPath = item => {
     const { name } = item;
-    const itemPath = this.conversionPath(item.path);
+    const itemPath = conversionPath(item.path);
     const icon = getIcon(item.icon);
     const { target } = item;
 
@@ -90,13 +80,6 @@ export default class MainMenu extends PureComponent {
     );
   };
 
-  conversionPath = path => {
-    if (path && path.indexOf('http') === 0) {
-      return path;
-    }
-    return `/${path || ''}`.replace(/\/+/g, '/');
-  };
-
   render() {
     const {
       openKeys,
@@ -104,10 +87,11 @@ export default class MainMenu extends PureComponent {
       mode,
       location: { pathname },
       className,
+      flatMenuKeys,
     } = this.props;
 
     // if pathname can't match, use the nearest parent's key
-    let selectedKeys = this.getSelectedMenuKeys(pathname);
+    let selectedKeys = getSelectedMenuKeys(pathname, flatMenuKeys);
     if (!selectedKeys.length && openKeys) {
       selectedKeys = [openKeys[openKeys.length - 1]];
     }
@@ -116,8 +100,6 @@ export default class MainMenu extends PureComponent {
     const cls = classNames(className, {
       'top-nav-menu': mode === 'horizontal',
     });
-
-    console.log('selectedKeys:', selectedKeys)
 
     return (
       <Menu

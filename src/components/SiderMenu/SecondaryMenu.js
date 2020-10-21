@@ -2,8 +2,7 @@ import React, { PureComponent } from 'react';
 import classNames from 'classnames';
 import { Menu } from 'antd';
 import { Link } from 'umi';
-import { urlToList } from '../_utils/pathTools';
-import { getMenuMatches } from './SiderMenuUtils';
+import { getSelectedMenuKeys, conversionPath } from './SiderMenuUtils';
 import { isUrl } from '@/utils/utils';
 import styles from './index.less';
 import MyIcon from '@/components/MyIcon';
@@ -42,15 +41,6 @@ export default class SecondaryMenu extends PureComponent {
       .filter(item => item);
   };
 
-  // Get the currently selected menu
-  getSelectedMenuKeys = pathname => {
-    const { flatMenuKeys } = this.props;
-
-    return urlToList(pathname).map(itemPath =>
-      getMenuMatches(flatMenuKeys, itemPath).pop(),
-    );
-  };
-
   /**
    * get SubMenu or Item
    */
@@ -70,7 +60,11 @@ export default class SecondaryMenu extends PureComponent {
       );
     }
 
-    return <Menu.Item key={item.path} icon={icon}>{this.getMenuItemPath(item)}</Menu.Item>;
+    return (
+      <Menu.Item key={item.path} icon={icon}>
+        {this.getMenuItemPath(item)}
+      </Menu.Item>
+    );
   };
 
   /**
@@ -80,7 +74,7 @@ export default class SecondaryMenu extends PureComponent {
    */
   getMenuItemPath = item => {
     const { name } = item;
-    const itemPath = this.conversionPath(item.path);
+    const itemPath = conversionPath(item.path);
     const icon = getIcon(item.icon);
     const { target } = item;
 
@@ -108,11 +102,10 @@ export default class SecondaryMenu extends PureComponent {
     );
   };
 
-  conversionPath = path => {
-    if (path && path.indexOf('http') === 0) {
-      return path;
-    }
-    return `/${path || ''}`.replace(/\/+/g, '/');
+  getSecondaryMenuData = () => {
+    const { mainRoute, menuData } = this.props;
+
+    return menuData.find(item => item.path === mainRoute);
   };
 
   render() {
@@ -122,9 +115,10 @@ export default class SecondaryMenu extends PureComponent {
       mode,
       location: { pathname },
       className,
+      flatMenuKeys,
     } = this.props;
     // if pathname can't match, use the nearest parent's key
-    let selectedKeys = this.getSelectedMenuKeys(pathname);
+    let selectedKeys = getSelectedMenuKeys(pathname, flatMenuKeys);
     if (!selectedKeys.length && openKeys) {
       selectedKeys = [openKeys[openKeys.length - 1]];
     }
@@ -134,24 +128,33 @@ export default class SecondaryMenu extends PureComponent {
         openKeys: openKeys.length === 0 ? [...selectedKeys] : openKeys,
       };
     }
-    const { handleOpenChange, style, menuData } = this.props;
+    const { handleOpenChange, style } = this.props;
     const cls = classNames(className, {
       'top-nav-menu': mode === 'horizontal',
     });
 
+    const secondaryMenuData = this.getSecondaryMenuData();
+
     return (
-      <Menu
-        key="Menu"
-        mode={mode}
-        theme={theme}
-        onOpenChange={handleOpenChange}
-        selectedKeys={selectedKeys}
-        style={style}
-        className={cls}
-        {...props}
-      >
-        {this.getNavMenuItems(menuData)}
-      </Menu>
+      <div>
+        {secondaryMenuData ? (
+          <div>
+            <div>{secondaryMenuData.name}</div>
+            <Menu
+              key="Menu"
+              mode={mode}
+              theme={theme}
+              onOpenChange={handleOpenChange}
+              selectedKeys={selectedKeys}
+              style={style}
+              className={cls}
+              {...props}
+            >
+              {this.getNavMenuItems(secondaryMenuData.children || [])}
+            </Menu>
+          </div>
+        ) : null}
+      </div>
     );
   }
 }

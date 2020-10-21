@@ -6,6 +6,8 @@ import styles from './index.less';
 import PageLoading from '../PageLoading';
 import { getDefaultCollapsedSubMenus } from './SiderMenuUtils';
 import { getHomePath } from '@/utils/menu';
+import { urlToList } from '../_utils/pathTools';
+import { getMenuMatches } from './SiderMenuUtils';
 
 const MainMenu = React.lazy(() => import('./MainMenu'));
 const SecondaryMenu = React.lazy(() => import('./SecondaryMenu'));
@@ -17,6 +19,7 @@ export default class SiderMenu extends PureComponent {
     super(props);
     this.state = {
       openKeys: getDefaultCollapsedSubMenus(props),
+      mainRoute: '',
     };
   }
 
@@ -31,6 +34,10 @@ export default class SiderMenu extends PureComponent {
     return null;
   }
 
+  setMainRoute = route => {
+    this.setState({ mainRoute: route });
+  };
+
   isMainMenu = key => {
     const { menuData } = this.props;
     return menuData.some(item => {
@@ -42,8 +49,6 @@ export default class SiderMenu extends PureComponent {
   };
 
   handleOpenChange = openKeys => {
-    console.log('openKeys:', openKeys)
-
     const moreThanOne =
       openKeys.filter(openKey => this.isMainMenu(openKey)).length > 1;
     this.setState({
@@ -55,15 +60,35 @@ export default class SiderMenu extends PureComponent {
     history.push(getHomePath());
   };
 
-  render() {
+  // Get the currently selected menu
+  getMainMenuKeys = pathname => {
+    const { flatMenuKeys } = this.props;
+
+    const selectedMenuKeys = urlToList(pathname).map(itemPath =>
+      getMenuMatches(flatMenuKeys, itemPath).pop(),
+    );
+
+    if (!selectedMenuKeys.length) {
+      this.setMainRoute('');
+    } else {
+      this.setMainRoute(selectedMenuKeys[0]);
+    }
+  };
+
+  componentDidUpdate() {
     const {
-      logo,
-      fixSiderbar,
-      theme,
-      title,
+      location: { pathname },
     } = this.props;
+
+    if (pathname !== this.state.mainRoute) {
+      this.getMainMenuKeys(pathname);
+    }
+  }
+
+  render() {
+    const { logo, fixSiderbar, theme, title } = this.props;
     const { openKeys } = this.state;
-    const defaultProps =   { openKeys };
+    const defaultProps = { openKeys };
 
     const siderClassName = classNames(styles.sider, {
       [styles.fixSiderbar]: fixSiderbar,
@@ -83,7 +108,7 @@ export default class SiderMenu extends PureComponent {
             <img src={logo} alt="logo" />
             <h1>{title}</h1>
           </div>
-       </div>
+        </div>
 
         <Suspense fallback={<PageLoading />}>
           <div className={styles.mainMenu}>
@@ -92,6 +117,7 @@ export default class SiderMenu extends PureComponent {
               style={{ padding: '20px 0', width: '100%' }}
               {...this.props}
               {...defaultProps}
+              setCurrentRoute={this.setMainRoute}
             />
           </div>
           <div className={styles.secondaryMenu}>
@@ -101,9 +127,10 @@ export default class SiderMenu extends PureComponent {
               handleOpenChange={this.handleOpenChange}
               onOpenChange={this.handleOpenChange}
               style={{ padding: '16px 0', width: '100%' }}
+              mainRoute={this.state.mainRoute}
               {...defaultProps}
             />
-           </div>
+          </div>
         </Suspense>
       </Sider>
     );
