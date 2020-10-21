@@ -7,7 +7,9 @@ import PageLoading from '../PageLoading';
 import { getDefaultCollapsedSubMenus } from './SiderMenuUtils';
 import { getHomePath } from '@/utils/menu';
 
-const BaseMenu = React.lazy(() => import('./BaseMenu'));
+const MainMenu = React.lazy(() => import('./MainMenu'));
+const SecondaryMenu = React.lazy(() => import('./SecondaryMenu'));
+
 const { Sider } = Layout;
 
 export default class SiderMenu extends PureComponent {
@@ -40,6 +42,8 @@ export default class SiderMenu extends PureComponent {
   };
 
   handleOpenChange = openKeys => {
+    console.log('openKeys:', openKeys)
+
     const moreThanOne =
       openKeys.filter(openKey => this.isMainMenu(openKey)).length > 1;
     this.setState({
@@ -61,7 +65,7 @@ export default class SiderMenu extends PureComponent {
     const { openKeys } = this.state;
     const defaultProps =   { openKeys };
 
-    const siderClassName = classNames(styles.siderMenu, {
+    const siderClassName = classNames(styles.sider, {
       [styles.fixSiderbar]: fixSiderbar,
     });
 
@@ -70,7 +74,7 @@ export default class SiderMenu extends PureComponent {
         trigger={null}
         collapsible
         breakpoint="lg"
-        width={200}
+        width={275}
         theme={theme}
         className={siderClassName}
       >
@@ -79,17 +83,27 @@ export default class SiderMenu extends PureComponent {
             <img src={logo} alt="logo" />
             <h1>{title}</h1>
           </div>
-        </div>
+       </div>
 
         <Suspense fallback={<PageLoading />}>
-          <BaseMenu
-            {...this.props}
-            mode="inline"
-            handleOpenChange={this.handleOpenChange}
-            onOpenChange={this.handleOpenChange}
-            style={{ padding: '16px 0', width: '100%' }}
-            {...defaultProps}
-          />
+          <div className={styles.mainMenu}>
+            <MainMenu
+              handleOpenChange={this.handleOpenChange}
+              style={{ padding: '20px 0', width: '100%' }}
+              {...this.props}
+              {...defaultProps}
+            />
+          </div>
+          <div className={styles.secondaryMenu}>
+            <SecondaryMenu
+              {...this.props}
+              mode="inline"
+              handleOpenChange={this.handleOpenChange}
+              onOpenChange={this.handleOpenChange}
+              style={{ padding: '16px 0', width: '100%' }}
+              {...defaultProps}
+            />
+           </div>
         </Suspense>
       </Sider>
     );

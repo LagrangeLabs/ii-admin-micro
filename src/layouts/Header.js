@@ -37,7 +37,7 @@ class HeaderView extends PureComponent {
       return '100%';
     }
 
-    return 'calc(100% - 200px)';
+    return 'calc(100% - 270px)';
   };
 
   handleMenuClick = ({ key }) => {

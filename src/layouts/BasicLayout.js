@@ -71,8 +71,6 @@ class BasicLayout extends React.PureComponent {
     getMenuData({ routes, authority, permissionMenuData });
   }
 
-
-
   getContext() {
     const { location, breadcrumbNameMap } = this.props;
 
@@ -112,8 +110,6 @@ class BasicLayout extends React.PureComponent {
 
     return null;
   };
-
-
 
   hideModal() {
     this.setState({ modalStatus: false });

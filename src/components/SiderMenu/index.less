@@ -2,15 +2,20 @@
 
 @nav-header-height: @layout-header-height;
 
-@menuBg: #3b69eb;
+@globalBg: #f7fafb;
+
 @menuLogoBg: #fff;
 @menuLogoBoxShadow: none;
 @menuLogoTitle: #334355;
-@menuColor: rgba(255, 255, 255, 0.7);
 
-@menuItemSelectedBg: #3c62dd;
-@menuItemSelectedColor: #fff;
-@menuItemSelectedHighlight: #638cff;
+@mainMenuBg: #0171FE;
+@mainMenuItemColor: rgba(255, 255, 255, 0.6);
+@mainMenuItemSelectedColor: #fff;
+
+@secondaryMenuBg: #fff;
+@secondaryMenuItemColor: rgba(92, 111, 136, 1);
+@secondaryMenuItemSelectedBg: rgba(0, 133, 255, 0.06);
+@secondaryMenuItemSelectedColor: rgba(72, 141, 255, 1);
 
 .menuLogo {
   height: @nav-header-height;
@@ -21,6 +26,7 @@
   background: @menuLogoBg;
   box-shadow: @menuLogoBoxShadow;
   overflow: hidden;
+  cursor: pointer;
 
   img {
     display: inline-block;
@@ -41,10 +47,14 @@
   }
 }
 
-.siderMenu {
+.sider {
   min-height: 100vh;
   position: relative;
   z-index: 10;
+
+  &:global(.ant-layout-sider) {
+    background: @globalBg;
+  }
 
   &.fixSiderbar {
     position: fixed;
@@ -56,9 +66,67 @@
       height: ~'calc(100vh - @{nav-header-height})';
     }
   }
+}
+
+
+.mainMenu {
+  display: inline-block;
+  width: 70px;
+  background: @mainMenuBg;
+  height: ~'calc(100vh - @{nav-header-height})';
+  vertical-align: top;
+
+  :global(.ant-menu-dark) {
+    background: @mainMenuBg;
+  }
+
+  :global(.ant-menu-item) {
+    background: @mainMenuBg !important;
+    color: @mainMenuItemColor;
+    text-align: center;
+
+    display: flex;
+    justify-content: center;
+    align-items: center
+  }
+
+  :global(.ant-menu-item .anticon) {
+    font-size: 24px;
+  }
+
+  :global(.ant-menu-item-selected) {
+    margin-bottom: 4px;
+
+    &::before {
+      content: '';
+      display: inline-block;
+      width: 0;
+      height: 0;
+      border: 9px solid;
+      border-color: transparent @mainMenuItemSelectedColor transparent transparent;
+
+      position: absolute;
+      right: 0;
+      top: 20px;
+      transform: translateY(-50%);
+    }
+
+    i,
+    span {
+      color: @mainMenuItemSelectedColor;
+    }
+  }
+}
+
+.secondaryMenu {
+  display: inline-block;
+  width: 200px;
+  background: @secondaryMenuBg;
+  height: ~'calc(100vh - @{nav-header-height})';
+  vertical-align: top;
 
   .menuItem {
-    color: @menuColor !important;
+    color: @secondaryMenuItemColor !important;
     font-size: 14px;
     align-items: center;
     display: flex;
@@ -66,13 +134,8 @@
     font-weight: bold;
   }
 
-  // 更改左侧菜单栏的样式
-  &:global(.ant-layout-sider) {
-    background: @menuBg;
-  }
-
   :global(.ant-menu-dark) {
-    background: @menuBg;
+    background: @secondaryMenuBg;
   }
 
   :global(.ant-menu-item) {
@@ -80,25 +143,29 @@
     height: 46px;
     display: flex;
     align-items: center;
+    color: @secondaryMenuItemColor;
   }
 
+  :global(.ant-menu-submenu) {
+    color: @secondaryMenuItemColor;
+  }
+
+
   :global(.ant-menu-item .anticon) {
-    color: @menuColor;
     font-size: 22px;
   }
 
+
   :global(.ant-menu-submenu .anticon) {
-    color: @menuColor;
-    font-size: 22px !important;
+    font-size: 22px;
   }
 
   :global(.ant-menu-sub) {
-    background: @menuBg !important;
+    background: @secondaryMenuBg !important;
     box-shadow: none !important;
 
     .menuItem {
       font-size: 13px;
-      color: @menuColor;
       line-height: 18px;
 
       :global(.anticon) {
@@ -108,22 +175,11 @@
   }
 
   :global(.ant-menu-item-selected) {
-    background: @menuItemSelectedBg !important;
-    position: relative;
-
-    &::before {
-      content: ' ';
-      display: inline-block;
-      width: 4px;
-      height: 46px;
-      background: @menuItemSelectedHighlight;
-      position: absolute;
-      left: 0px;
-    }
+    background: @secondaryMenuItemSelectedBg !important;
 
     i,
     span {
-      color: @menuItemSelectedColor !important;
+      color: @secondaryMenuItemSelectedColor !important;
     }
   }
 }
